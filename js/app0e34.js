@@ -186,15 +186,9 @@
     const NOTE_PREROLL = 0.12;   // seconds
 
     // ------------------------------------------------------------ access gate
-    // auth.js (loaded after us, as a module) publishes window.OrbkordAuth and
-    // fires 'orbkord-auth-changed' on every auth/trial/licence change. Before it
-    // has published anything we allow (the visual overlay lands within ~100ms);
-    // afterwards, core features require hasAccess. auth.js also draws the
-    // blocking overlay — these guards stop keyboard/MIDI paths the overlay
-    // can't intercept.
+    // Always allow access for local use without authentication.
     function accessOk() {
-      const a = window.OrbkordAuth;
-      return !a || a.hasAccess === true;
+      return true;
     }
 
     // -------------------------------------------------------------- helpers
@@ -587,7 +581,6 @@
 
     // Shared by the "Load MIDI" picker and the audio-transcription flow.
     function loadMidiBuffer(buf, name) {
-      if (!accessOk()) { flashStatus('Log in to use OrbKord.'); return; }
       if (harmonizeOn) setHarmonize(false);   // harmonising is a live-input feature
       installMidi(MidiFile.parse(buf), name);
       state.progression = null;
@@ -798,7 +791,6 @@
     }
 
     function setHarmonize(on) {
-      if (on && !accessOk()) return;
       harmonizeOn = on;
       btnHarmonize.classList.toggle('on', on);
       if (on) {
@@ -1038,7 +1030,7 @@
     }
 
     function startTake() {
-      if (state.harmMode !== 'free' || !accessOk()) return;
+      if (state.harmMode !== 'free') return;
       stop();
       if (!harmonizeOn) setHarmonize(true);   // a take captures the harmonised performance
       synth.resume();
@@ -1484,7 +1476,7 @@
     let breathLink = null;      // active BreathLink session
     let breathVal = 1;          // neutral until the phone speaks
     let breathTimer = null;     // QR countdown interval
-    const airbrassOn = () => soundSelect && soundSelect.value === 'airbrass';
+    const airbrassOn = () => soundSelect && soundSelect.value === 'air_brass';
     // Breath doubles as note-on velocity, so soft blowing also picks the soft
     // brass velocity layer (intra-note dynamics are the ExpressionBus' job).
     const breathVel = () => Math.max(1, Math.min(127, Math.round(30 + 97 * breathVal)));
@@ -1644,8 +1636,8 @@
     if (soundSelect) {
       soundSelect.addEventListener('change', async () => {
         const val = soundSelect.value;
-        // Air Brass = the 'brass' sample set + breath control on top.
-        const name = val === 'synth' ? null : (val === 'airbrass' ? 'brass' : val);
+        // Air Brass = the 'air_brass' sample set + breath control on top.
+        const name = val === 'synth' ? null : val;
         soundSelect.disabled = true;
         soundSelect.classList.add('busy');
         try {
@@ -1876,16 +1868,6 @@
       renderer.draw(state);
       requestAnimationFrame(frame);
     }
-
-    // When access goes away mid-session (sign-out, trial just expired), silence
-    // and stop everything; auth.js's overlay takes over the workspace.
-    window.addEventListener('orbkord-auth-changed', (e) => {
-      if (e.detail && e.detail.hasAccess) return;
-      if (harmonizeOn) setHarmonize(false);
-      stop();
-      stopLiveNotes();
-      if (state.recording) stopRecording();
-    });
 
     initLiveMidi();
     requestAnimationFrame(frame);
