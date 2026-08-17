@@ -130,7 +130,7 @@ class ExpressionBus {
     this._curGen = [];
     this._lastNoteAt = -Infinity;
 
-    this.setBreath(1); // neutral until a phone speaks
+    this.setBreath(0); // start silent until a phone speaks
   }
 
   setAttack(s) { this.attack = Math.max(0, Math.min(BREATH_MAP.PARAM_MAX_S, s)); }

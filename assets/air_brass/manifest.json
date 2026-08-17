@@ -1,6 +1,10 @@
 {
   "version": 1,
   "instrument": "air_brass",
+  "loop": {
+    "start": 0.5,
+    "end": 2.0
+  },
   "samples": [
     {
       "key": 36,
@@ -63,16 +67,28 @@
       "file": "air_brass_Gb4.wav"
     },
     {
-      "key": 66,
-      "root": 66,
-      "tune": 0,
-      "file": "air_brass_Gb4_1.wav"
-    },
-    {
       "key": 69,
       "root": 69,
       "tune": 0,
       "file": "air_brass_A4.wav"
+    },
+    {
+      "key": 72,
+      "root": 72,
+      "tune": 0,
+      "file": "air_brass_C6.wav"
+    },
+    {
+      "key": 75,
+      "root": 75,
+      "tune": 0,
+      "file": "air_brass_E6.wav"
+    },
+    {
+      "key": 78,
+      "root": 78,
+      "tune": 0,
+      "file": "air_brass_A6.wav"
     }
   ]
 }
