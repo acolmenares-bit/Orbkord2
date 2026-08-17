@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "instrument": "grand_piano",
+  "samples": [
+    {
+      "key": 36,
+      "root": 36,
+      "tune": 0,
+      "file": "grand_piano_piano_65.4Hz.wav"
+    },
+    {
+      "key": 36,
+      "root": 36,
+      "tune": 0,
+      "file": "grand_piano_piano_65.4Hz.wav"
+    },
+    {
+      "key": 40,
+      "root": 40,
+      "tune": 0,
+      "file": "grand_piano_piano_82.4Hz.wav"
+    },
+    {
+      "key": 40,
+      "root": 40,
+      "tune": 0,
+      "file": "grand_piano_piano_82.4Hz.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "grand_piano_piano_110.0Hz.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "grand_piano_piano_110.0Hz.wav"
+    },
+    {
+      "key": 56,
+      "root": 56,
+      "tune": 0,
+      "file": "grand_piano_piano_207.7Hz.wav"
+    },
+    {
+      "key": 56,
+      "root": 56,
+      "tune": 0,
+      "file": "grand_piano_piano_207.7Hz.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "grand_piano_piano_277.2Hz.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "grand_piano_piano_277.2Hz.wav"
+    },
+    {
+      "key": 66,
+      "root": 66,
+      "tune": 0,
+      "file": "grand_piano_piano_370.0Hz.wav"
+    },
+    {
+      "key": 66,
+      "root": 66,
+      "tune": 0,
+      "file": "grand_piano_piano_370.0Hz.wav"
+    },
+    {
+      "key": 70,
+      "root": 70,
+      "tune": 0,
+      "file": "grand_piano_piano_466.2Hz.wav"
+    },
+    {
+      "key": 70,
+      "root": 70,
+      "tune": 0,
+      "file": "grand_piano_piano_466.2Hz.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "grand_piano_piano_554.4Hz.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "grand_piano_piano_554.4Hz.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "grand_piano_piano_698.5Hz.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "grand_piano_piano_698.5Hz.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "grand_piano_piano_880.0Hz.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "grand_piano_piano_880.0Hz.wav"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "instrument": "air_brass",
+  "samples": [
+    {
+      "key": 36,
+      "root": 36,
+      "tune": 0,
+      "file": "air_brass_C2.wav"
+    },
+    {
+      "key": 39,
+      "root": 39,
+      "tune": 0,
+      "file": "air_brass_Eb2.wav"
+    },
+    {
+      "key": 42,
+      "root": 42,
+      "tune": 0,
+      "file": "air_brass_Gb2.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "air_brass_A2.wav"
+    },
+    {
+      "key": 48,
+      "root": 48,
+      "tune": 0,
+      "file": "air_brass_C3.wav"
+    },
+    {
+      "key": 51,
+      "root": 51,
+      "tune": 0,
+      "file": "air_brass_Eb3.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "air_brass_A3.wav"
+    },
+    {
+      "key": 60,
+      "root": 60,
+      "tune": 0,
+      "file": "air_brass_C4.wav"
+    },
+    {
+      "key": 63,
+      "root": 63,
+      "tune": 0,
+      "file": "air_brass_Eb4.wav"
+    },
+    {
+      "key": 66,
+      "root": 66,
+      "tune": 0,
+      "file": "air_brass_Gb4.wav"
+    },
+    {
+      "key": 66,
+      "root": 66,
+      "tune": 0,
+      "file": "air_brass_Gb4_1.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "air_brass_A4.wav"
+    }
+  ]
+}

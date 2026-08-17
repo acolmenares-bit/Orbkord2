@@ -121,14 +121,14 @@
     }
 
     // Switch sound source. name = null → built-in synth; otherwise a folder
-    // under assets/sf/ (e.g. 'rhodes', 'petrof'). Lazy-loads + caches.
+    // under assets/ (e.g. 'rhodes', 'grand_piano'). Lazy-loads + caches.
     async setInstrument(name) {
       if (!name) { this.instrument = null; return; }
       let s = this._samplers.get(name);
       if (!s) {
         // s = new Sampler(this.ctx, this.masterGain);
         s = new Sampler(this.ctx, this);
-        await s.load(`assets/sf/${name}`);
+        await s.load(`assets/${name}`);
         this._samplers.set(name, s);
       }
       this.instrument = s;

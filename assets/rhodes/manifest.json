@@ -1,0 +1,474 @@
+{
+  "version": 1,
+  "instrument": "rhodes",
+  "samples": [
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz_layer3.wav"
+    },
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz.wav"
+    },
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz_layer2.wav"
+    },
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz_layer4.wav"
+    },
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz_layer5.wav"
+    },
+    {
+      "key": 33,
+      "root": 33,
+      "tune": 0,
+      "file": "rhodes_piano_A1_55.0Hz_layer1.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz_layer2.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz_layer4.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz_layer1.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz_layer5.wav"
+    },
+    {
+      "key": 37,
+      "root": 37,
+      "tune": 0,
+      "file": "rhodes_piano_Db2_69.3Hz_layer3.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz_layer2.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz_layer5.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz_layer4.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz_layer3.wav"
+    },
+    {
+      "key": 41,
+      "root": 41,
+      "tune": 0,
+      "file": "rhodes_piano_F2_87.3Hz_layer1.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz_layer2.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz_layer1.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz_layer5.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz_layer3.wav"
+    },
+    {
+      "key": 45,
+      "root": 45,
+      "tune": 0,
+      "file": "rhodes_piano_A2_110.0Hz_layer4.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz_layer5.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz_layer2.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz_layer3.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz_layer4.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz.wav"
+    },
+    {
+      "key": 49,
+      "root": 49,
+      "tune": 0,
+      "file": "rhodes_piano_Db3_138.6Hz_layer1.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz_layer1.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz_layer5.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz_layer4.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz_layer3.wav"
+    },
+    {
+      "key": 53,
+      "root": 53,
+      "tune": 0,
+      "file": "rhodes_piano_F3_174.6Hz_layer2.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz_layer5.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz_layer1.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz_layer2.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz_layer4.wav"
+    },
+    {
+      "key": 57,
+      "root": 57,
+      "tune": 0,
+      "file": "rhodes_piano_A3_220.0Hz_layer3.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz_layer4.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz_layer1.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz_layer3.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz_layer5.wav"
+    },
+    {
+      "key": 61,
+      "root": 61,
+      "tune": 0,
+      "file": "rhodes_piano_Db4_277.2Hz_layer2.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz_layer4.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz_layer5.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz_layer3.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz_layer2.wav"
+    },
+    {
+      "key": 65,
+      "root": 65,
+      "tune": 0,
+      "file": "rhodes_piano_F4_349.2Hz_layer1.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz_layer1.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz_layer4.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz_layer3.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz_layer5.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz_layer2.wav"
+    },
+    {
+      "key": 69,
+      "root": 69,
+      "tune": 0,
+      "file": "rhodes_piano_A4_440.0Hz.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz_layer4.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz_layer1.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz_layer3.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz_layer5.wav"
+    },
+    {
+      "key": 73,
+      "root": 73,
+      "tune": 0,
+      "file": "rhodes_piano_Db5_554.4Hz_layer2.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz_layer5.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz_layer2.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz_layer4.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz_layer1.wav"
+    },
+    {
+      "key": 77,
+      "root": 77,
+      "tune": 0,
+      "file": "rhodes_piano_F5_698.5Hz_layer3.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz_layer4.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz_layer2.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz_layer5.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz_layer1.wav"
+    },
+    {
+      "key": 81,
+      "root": 81,
+      "tune": 0,
+      "file": "rhodes_piano_A5_880.0Hz_layer3.wav"
+    }
+  ]
+}
