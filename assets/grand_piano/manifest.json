@@ -3,40 +3,34 @@
   "instrument": "grand_piano",
   "samples": [
     {
-      "key": 56,
-      "root": 56,
-      "tune": 0,
-      "file": "grand_piano_D6.wav"
-    },
-    {
-      "key": 61,
-      "root": 61,
+      "key": 73,
+      "root": 73,
       "tune": 0,
       "file": "grand_piano_Db6.wav"
     },
     {
-      "key": 66,
-      "root": 66,
+      "key": 74,
+      "root": 74,
       "tune": 0,
-      "file": "grand_piano_F6.wav"
-    },
-    {
-      "key": 70,
-      "root": 70,
-      "tune": 0,
-      "file": "grand_piano_Gb6.wav"
-    },
-    {
-      "key": 73,
-      "root": 73,
-      "tune": 0,
-      "file": "grand_piano_B6.wav"
+      "file": "grand_piano_D6.wav"
     },
     {
       "key": 77,
       "root": 77,
       "tune": 0,
+      "file": "grand_piano_F6.wav"
+    },
+    {
+      "key": 79,
+      "root": 79,
+      "tune": 0,
       "file": "grand_piano_G6.wav"
+    },
+    {
+      "key": 83,
+      "root": 83,
+      "tune": 0,
+      "file": "grand_piano_B6.wav"
     }
   ]
 }
