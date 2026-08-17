@@ -1,0 +1,834 @@
+/* OrbKord — modern-plugin chrome.
+   All hues live in the :root / body.light variable blocks: to re-accent the
+   whole app, change --accent + --accent-deep only. */
+
+:root {
+  --bg: #0a0b0e;
+  --bg-bar: #101218;
+  --bg-panel: #0d0f14;
+  --surface: #171a22;
+  --surface-hi: #1e222d;
+  --line: #262c3a;
+  --line-soft: #1d2230;
+  --text: #b4b8c4;
+  --text-hi: #f2f4f8;
+  --text-dim: #5f6575;
+
+  /* Glacier — hsl(188 68% 62%). Deliberately held under 80% saturation. The
+     previous #00d4ff sat at 100%, which is what made it read as stock neon. */
+  --accent: #5bd1e0;
+  --accent-deep: #2e9cad;
+  --accent-soft: rgba(91, 209, 224, .1);
+  --accent-glow: rgba(91, 209, 224, .38);
+  --danger: #ff3b5c;
+
+  /* Wells: surfaces that read as cut INTO the panel — slider tracks, select
+     faces, the mode-toggle housing. Everything else sits on top. */
+  --well: #07090d;
+
+  /* Radius carries meaning instead of being uniform:
+     pill = an action, ctl = a chooser or field, card = a container. */
+  --r-pill: 999px;
+  --r-ctl: 8px;
+  --r-card: 12px;
+
+  /* Shadows tinted toward the background hue rather than pure black, and one
+     consistent light source: everything is lit from above. */
+  --shadow-pop: 0 18px 44px rgba(4, 8, 16, .62);
+  --shadow-sink: inset 0 1px 2px rgba(0, 0, 0, .6);
+  --hi-edge: rgba(255, 255, 255, .028);
+  --ease: cubic-bezier(.22, .61, .36, 1);
+}
+
+body.light {
+  --bg: #eef1f5;
+  --bg-bar: #ffffff;
+  --bg-panel: #f7f9fc;
+  --surface: #ffffff;
+  --surface-hi: #f2f5f9;
+  --line: #d5dbe4;
+  --line-soft: #e2e7ee;
+  --text: #3a3f4a;
+  --text-hi: #10131a;
+  --text-dim: #9aa0ad;
+  --accent: #2a93a5;
+  --accent-deep: #1d7181;
+  --accent-soft: rgba(42, 147, 165, .1);
+  --accent-glow: rgba(42, 147, 165, .3);
+  --well: #e4e9f0;
+  --shadow-pop: 0 18px 44px rgba(20, 40, 60, .18);
+  --shadow-sink: inset 0 1px 2px rgba(30, 45, 65, .13);
+  --hi-edge: rgba(255, 255, 255, .9);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100dvh;   /* dvh, not vh — vh jumps when mobile browser chrome hides */
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  /* This UI is full of note names, BPMs, split points and velocities. Tabular
+     figures stop them shifting width as values change. */
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ------------------------------------------------- Icons */
+/* The sprite itself never renders; it only supplies <symbol> targets. */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.ico {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  margin-top: -1px;   /* optical: glyph centre vs. label cap-height */
+}
+.btn-label { line-height: 1; }
+
+/* Status LED — the one place the accent is allowed to glow. */
+.led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--line);
+  transition: background-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.btn.accent .led,
+.btn.on .led { background: var(--accent); box-shadow: 0 0 7px var(--accent-glow); }
+
+/* ------------------------------------------------- Top transport bar */
+/* Fixed 2-row dashboard layout.
+   The toolbar itself is a 15-column grid. .tb-main is display:contents so its
+   child panels become direct grid items without changing your HTML structure. */
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  grid-template-areas:
+    "play play play play play view view view view view view view acct acct acct"
+    "key  key  key  key  bass bass bass sound sound sound sound input video video video";
+  gap: 8px;
+  align-items: stretch;
+  padding: 8px 12px 10px;
+  background: var(--bg-bar);
+  border-bottom: 1px solid var(--line-soft);
+  flex-shrink: 0;
+}
+
+/* Let the children of .tb-main participate directly in .toolbar grid. */
+.tb-main {
+  display: contents;
+}
+
+/* Panels */
+.tb-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 9px 7px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-card);
+  overflow: hidden;
+}
+
+/* Grid placement */
+.tb-group-playback { grid-area: play; }
+.tb-group-view     { grid-area: view; }
+.tb-group-key      { grid-area: key; }
+.tb-group-bass     { grid-area: bass; }
+.tb-group-sound    { grid-area: sound; }
+.tb-group-input    { grid-area: input; }
+.tb-group-video    { grid-area: video; }
+.tb-account        { grid-area: acct; }
+
+/* Hide empty auth shell before auth.js paints. */
+.tb-account:has(> .tb-controls > #auth-box:empty) {
+  display: none;
+}
+
+.tb-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-left: 2px;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.tb-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Dense bar spacing only; component skinning remains in .btn / select / range rules. */
+.toolbar .btn {
+  padding: 7px 11px;
+}
+
+/* Let the big groups compress cleanly instead of forcing extra rows. */
+.tb-group-playback .tb-controls,
+.tb-group-view .tb-controls,
+.tb-group-sound .tb-controls {
+  overflow: hidden;
+}
+
+/* Volume rows */
+.vol-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.vol-icon {
+  font-size: 13px;
+  line-height: 1;
+  opacity: .8;
+  flex: 0 0 auto;
+}
+
+/* Auth */
+#auth-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Sliders */
+#seek {
+  flex: 1 1 90px;
+  min-width: 60px;
+  max-width: 260px;
+}
+
+#master-volume,
+#reverb-amount {
+  flex: 0 0 78px;
+  width: 78px;
+}
+
+/* Width rails */
+#rate {
+  width: 72px;
+  min-width: 72px;
+}
+
+#fret-tuning {
+  width: 210px;
+  min-width: 180px;
+}
+
+#key-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#split-mode {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#split-point {
+  flex: 0 0 116px;
+  width: 116px;
+}
+
+#sound-select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Keep select text from forcing huge panels */
+.toolbar select.btn {
+  max-width: 100%;
+}
+
+/* Account must NOT clip. The login dropdown is position:absolute inside
+   #auth-box, so any overflow:hidden ancestor renders it invisible and the
+   Log in button looks dead even though its click fired normally. The panel's
+   own content is width-capped below, so nothing here can blow out the grid. */
+.tb-account,
+.tb-account .tb-controls {
+  overflow: visible;
+}
+
+/* These two panels hold less than their grid track is wide, so left-aligned
+   content leaves them looking unfinished next to the packed ones. */
+.tb-account .tb-controls,
+.tb-group-video .tb-controls {
+  justify-content: center;
+}
+
+#auth-box .auth-email {
+  min-width: 0;
+  max-width: 170px;
+}
+
+/* Slightly tighten labels/buttons on smaller laptop widths */
+@media (max-width: 1600px) {
+  .toolbar {
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    grid-template-areas:
+      "play play play play play view view view view view view view acct acct acct"
+      "key  key  key  bass bass bass sound sound sound sound input video video video video";
+  }
+
+  .btn-label {
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #fret-tuning {
+    width: 190px;
+  }
+
+  #master-volume,
+  #reverb-amount {
+    flex-basis: 70px;
+    width: 70px;
+  }
+}
+
+/* Tablet-ish: switch to a clean 3-row grid rather than ugly overflow. */
+@media (max-width: 1250px) {
+  .toolbar {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-areas:
+      "play play play play play play acct acct acct acct acct acct"
+      "view view view view view view view view view view view view"
+      "key key key bass bass bass sound sound sound input video video";
+  }
+
+  .tb-group-view .tb-controls {
+    flex-wrap: wrap;
+  }
+}
+
+/* Narrow screens: stack panels cleanly. */
+@media (max-width: 820px) {
+  .toolbar {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "acct"
+      "play"
+      "view"
+      "key"
+      "bass"
+      "sound"
+      "input"
+      "video";
+  }
+
+  .tb-controls,
+  .tb-group-playback .tb-controls,
+  .tb-group-view .tb-controls,
+  .tb-group-sound .tb-controls {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  #seek {
+    min-width: 100%;
+    max-width: none;
+  }
+}
+
+
+
+/* ------------------------------------------------- Controls (pills) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  background: linear-gradient(180deg, var(--surface-hi), var(--surface));
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);   /* pill = this DOES something */
+  box-shadow: inset 0 1px 0 var(--hi-edge);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: border-color .2s var(--ease), color .2s var(--ease),
+              background-color .2s var(--ease), box-shadow .2s var(--ease),
+              transform .1s var(--ease);
+}
+
+.btn:hover:not(:disabled) { border-color: var(--accent-deep); color: var(--text-hi); }
+/* Pressed feedback: the cap travels down into the panel. */
+.btn:active:not(:disabled) { transform: translateY(1px); box-shadow: var(--shadow-sink); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.btn:disabled { opacity: .35; cursor: default; }
+
+.btn.accent { border-color: var(--accent-deep); color: var(--accent); }
+.btn.accent:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); }
+.btn.on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 0 1px 0 var(--hi-edge), 0 0 14px -5px var(--accent-glow);
+}
+
+.btn.rec {
+  border-color: var(--danger);
+  color: var(--danger);
+  animation: pulse 1.2s infinite;
+}
+.btn.busy {
+  border-color: var(--accent);
+  color: var(--accent);
+  pointer-events: none;
+  animation: pulse-cyan 1.2s infinite;
+}
+@keyframes pulse { 50% { background: rgba(255, 59, 92, .12); } }
+@keyframes pulse-cyan { 50% { background: var(--accent-soft); } }
+
+/* Selects are CHOOSERS, not actions, so they get their own shape: a squarer
+   8px radius on a recessed face. Previously every control in the app was the
+   same 999px pill, so 20-odd dropdowns were indistinguishable from buttons. */
+select.btn {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 30px;
+  border-radius: var(--r-ctl);
+  font-weight: 500;
+  color: var(--text);
+  background-color: var(--well);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'><path d='M1 1l3.5 3.5L8 1' fill='none' stroke='%235f6575' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  box-shadow: var(--shadow-sink);
+}
+/* The chevron is a data URI, so it cannot read var(--text-dim) — restate it. */
+body.light select.btn {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'><path d='M1 1l3.5 3.5L8 1' fill='none' stroke='%239aa0ad' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+}
+select.btn:hover:not(:disabled) { color: var(--text-hi); }
+/* A chooser is already recessed, so it must not travel further on press. */
+select.btn:active:not(:disabled) { transform: none; box-shadow: var(--shadow-sink); }
+
+/* ------------------------------------------------- Range sliders */
+/* Tracks are wells cut into the panel; the travelled portion lights up in the
+   accent. WebKit has no ::-moz-range-progress equivalent, so app.js keeps the
+   --fill percentage in sync and the gradient hard-stops at it. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+  --fill: 0;          /* 0..1 ratio, kept in sync by paintRange() */
+  --thumb: 20px;      /* 14px cap + a 3px ring either side */
+  /* The cap's CENTRE travels between half a cap from each end, so the colour
+     break has to follow that path — not a flat percentage of the track, which
+     overshoots the cap by up to half its width in the middle of the range. */
+  --stop: calc(var(--thumb) / 2 + var(--fill) * (100% - var(--thumb)));
+}
+input[type="range"]:disabled { opacity: .4; cursor: default; }
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg,
+    var(--accent) 0 var(--stop), var(--well) var(--stop) 100%);
+  box-shadow: var(--shadow-sink), inset 0 0 0 1px var(--line-soft);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  margin-top: -4px;
+  background: var(--accent);
+  /* Ringed in the bar colour so the cap reads as sitting above the well. */
+  border: 3px solid var(--bg-bar);
+  box-shadow: 0 1px 3px rgba(4, 8, 16, .55);
+  transition: transform .12s var(--ease);
+}
+input[type="range"]:hover:not(:disabled)::-webkit-slider-thumb { transform: scale(1.14); }
+input[type="range"]:active:not(:disabled)::-webkit-slider-thumb { transform: scale(.94); }
+
+input[type="range"]::-moz-range-track {
+  height: 6px; border-radius: 3px; background: var(--well);
+  box-shadow: var(--shadow-sink), inset 0 0 0 1px var(--line-soft);
+}
+input[type="range"]::-moz-range-progress {
+  height: 6px; border-radius: 3px; background: var(--accent);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg-bar);
+  box-shadow: 0 1px 3px rgba(4, 8, 16, .55);
+}
+
+/* The seek bar is the one elastic control in the bar — it gives up width first
+   so the Playback panel keeps its buttons on one line for longer. */
+#seek { flex: 1 1 110px; min-width: 70px; max-width: 300px; }
+#master-volume, #reverb-amount { flex: 0 0 84px; width: 84px; }
+
+input[type="checkbox"] { accent-color: var(--accent); }
+
+/* ------------------------------------------------- Workspace */
+.workspace {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;   /* anchors the access-gate overlay */
+}
+
+/* Left sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  min-width: 260px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--line-soft);
+  padding: 16px 14px;
+  gap: 10px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+}
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+/* Mode toggle: one segmented pill, not two floating buttons */
+.sidebar .mode-toggle {
+  display: flex;
+  padding: 3px;
+  background: var(--well);            /* housing is recessed… */
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-sink);
+  margin-bottom: 4px;
+}
+.sidebar .mode-toggle .btn {
+  flex: 1;
+  justify-content: center;
+  background: none;
+  border: 1px solid transparent;
+  box-shadow: none;                   /* …so the caps inside must not emboss */
+}
+.sidebar .mode-toggle .btn:active:not(:disabled) { transform: none; }
+.sidebar .mode-toggle .btn.on {
+  background: var(--accent-soft);
+  border-color: var(--accent-deep);
+  color: var(--accent);
+}
+.sidebar [data-harm-group][hidden] { display: none; }
+.sidebar .block { width: 100%; justify-content: flex-start; }
+.sidebar .flex-row { display: flex; gap: 8px; width: 100%; }
+.sidebar .half { flex: 1; justify-content: flex-start; }
+
+/* Section cards: each function cluster lives in its own bordered card */
+.side-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px;
+  background: var(--bg-bar);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-card);
+  /* Catches the same overhead light as every other raised surface. */
+  box-shadow: inset 0 1px 0 var(--hi-edge);
+}
+
+/* Labelled fields inside cards */
+.field { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.field-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding-left: 2px;
+}
+
+.sidebar .section-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin: 0 0 2px;
+}
+.sidebar .section-title::before {
+  content: '';
+  width: 14px; height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+/* Voicing controls (clustering slider + bass toggle) */
+.sidebar .slider-row {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  font-size: 10px; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.sidebar .slider-row input[type="range"] { flex: 1; min-width: 0; }
+.sidebar .check-row {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  font-size: 12px; color: var(--text); cursor: pointer;
+}
+
+/* Right canvas area */
+.stage-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  min-height: 0;
+  min-width: 0;
+  background: var(--bg);
+}
+
+#stage {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: #0d0e12;
+  box-shadow: 0 10px 40px rgba(4, 8, 16, .5);   /* tinted, not pure black */
+}
+body.light #stage { background: #ffffff; box-shadow: 0 10px 40px rgba(20, 40, 60, .12); }
+
+/* ------------------------------------------------- Bottom status bar */
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 16px;
+  background: var(--bg-bar);
+  border-top: 1px solid var(--line-soft);
+  font-size: 11px;
+  letter-spacing: .03em;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+#midi-status { color: var(--text); opacity: .75; white-space: nowrap; }
+.hint { text-align: right; }
+
+/* ------------------------------------------------- Auth (top bar) */
+#auth-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+#auth-box .auth-email {
+  font-size: 12px; color: var(--text); max-width: 180px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#auth-box .auth-trial {
+  font-size: 10px; font-weight: 700; letter-spacing: .05em; color: var(--accent);
+  border: 1px solid var(--accent-deep); border-radius: 999px;
+  padding: 3px 10px; white-space: nowrap;
+}
+#auth-box .auth-note { font-size: 11px; color: var(--text-dim); }
+
+/* Login / sign-up dropdown panel */
+.auth-panel {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 200;
+  width: 300px; display: flex; flex-direction: column; gap: 10px;
+  padding: 18px; background: var(--bg-bar);
+  border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: var(--shadow-pop);
+  cursor: default; text-align: left;
+  animation: auth-pop .12s ease-out;
+}
+@keyframes auth-pop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.auth-panel-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 2px; }
+.auth-title { font-size: 15px; font-weight: 700; color: var(--text-hi); }
+.auth-sub { font-size: 12px; color: var(--text-dim); }
+
+.auth-input {
+  width: 100%; box-sizing: border-box; padding: 10px 12px;
+  background: var(--well); color: var(--text-hi);
+  border: 1px solid var(--line); border-radius: var(--r-ctl);
+  box-shadow: var(--shadow-sink);   /* a field is a well, like the selects */
+  font-family: inherit; font-size: 13px; outline: none;
+  transition: border-color .2s var(--ease);
+}
+.auth-input::placeholder { color: var(--text-dim); }
+.auth-input:focus { border-color: var(--accent); }
+
+.auth-primary { justify-content: center; width: 100%; padding: 10px; font-size: 13px; }
+
+.auth-links { display: flex; justify-content: space-between; gap: 8px; }
+.auth-link {
+  background: none; border: none; padding: 2px 0; cursor: pointer;
+  font-family: inherit; font-size: 12px; color: var(--text-dim); text-decoration: none;
+}
+.auth-link:hover { color: var(--accent); }
+
+.auth-divider {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text-dim); font-size: 10px;
+  text-transform: uppercase; letter-spacing: .08em;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--line-soft);
+}
+
+.auth-google { justify-content: center; width: 100%; padding: 10px; font-size: 12px; }
+
+.auth-msg {
+  font-size: 12px; line-height: 1.4; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid transparent;
+}
+.auth-msg-error { color: #ff9b9b; background: #2a1518; border-color: #5a2a2f; }
+.auth-msg-ok    { color: #9be7c4; background: #10251c; border-color: #205a44; }
+.auth-msg-info  { color: var(--text); background: var(--surface); border-color: var(--line); }
+body.light .auth-msg-error { color: #a11f2a; background: #fdecee; border-color: #f3c2c8; }
+body.light .auth-msg-ok    { color: #1a7a4f; background: #e7f7ee; border-color: #b6e2c9; }
+
+/* ------------------------------------------------- Access gate (trial/paywall) */
+/* Covers the workspace (canvas + sidebar) but NOT the top bar, so the login
+   dropdown stays reachable. auth.js creates/updates #app-gate. */
+.app-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 11, 14, .72);   /* fallback */
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+.app-gate[hidden] { display: none; }
+
+.gate-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 360px;
+  padding: 30px 28px;
+  background: var(--bg-bar);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-pop);
+  text-align: center;
+}
+.gate-logo { font-size: 13px; font-weight: 700; letter-spacing: .3em; color: var(--accent); }
+.gate-title { font-size: 19px; font-weight: 700; color: var(--text-hi); }
+.gate-sub { font-size: 13px; line-height: 1.5; color: var(--text-dim); }
+.gate-cta { justify-content: center; width: 100%; padding: 11px; font-size: 14px; }
+.gate-note { font-size: 11px; color: var(--text-dim); }
+
+/* ------------------------------------------------- Air Brass (blow into phone) */
+/* Pairing modal: full-viewport overlay (above the access gate) reusing the
+   gate-card look; the QR sits on white in both themes for scan contrast. */
+.breath-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 11, 14, .72);   /* fallback */
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+}
+.breath-modal[hidden] { display: none; }
+
+.breath-qr {
+  width: 208px;
+  height: 208px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #fff;
+}
+.breath-qr svg { width: 100%; height: 100%; display: block; }
+
+.breath-status { font-size: 13px; color: var(--text); min-height: 18px; }
+.breath-status.ok  { color: #58d996; }
+.breath-status.err { color: #ff9b9b; }
+body.light .breath-status.ok  { color: #1a7a4f; }
+body.light .breath-status.err { color: #a11f2a; }
+
+.breath-actions { display: flex; gap: 8px; }
+
+/* Sound-design controls — live, so they can be tweaked while playing. */
+.breath-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.breath-row {
+  display: grid;
+  grid-template-columns: 52px 1fr 54px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.breath-row b { font-weight: 600; color: var(--accent); text-align: right; }
+
+/* Toolbar pill: live breath meter + link-state dot (click reopens the QR). */
+.breath-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.breath-pill[hidden] { display: none; }
+.breath-pill-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); }
+.breath-pill-dot.ok   { background: #58d996; }
+.breath-pill-dot.warn { background: #e8c268; }
+.breath-pill-meter {
+  width: 54px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+#breath-pill-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+}

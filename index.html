@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from orbkord.net/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Aug 2026 18:44:41 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OrbKord</title>
+  <meta name="description" content="OrbKord detects the chords you play in real time, harmonises your melodies, and shows them on piano, staff and fretboard.">
+  <meta name="theme-color" content="#0a0b0e">
+  <meta property="og:title" content="OrbKord">
+  <meta property="og:description" content="Real-time chord detection, harmonisation and voicing for players.">
+  <meta property="og:type" content="website">
+  <!-- Inline favicon: the orb mark in the accent, so there is no extra request
+       and it stays in sync with --accent. -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0b0e'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%235BD1E0' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='3.4' fill='%235BD1E0'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style80ba.css?v=23">
+</head>
+<body>
+  <!-- Icon sprite. One set, 1.5 stroke throughout, every glyph drawn in
+       currentColor so it inherits its control's text colour and theme for free.
+       Replaces the emoji that used to sit in these labels (📂 ▶ ■ ● ⬇ ↻ ⬡ ☀),
+       which rendered differently on every OS and could not be recoloured. -->
+  <svg class="icon-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      <mask id="ok-midi-knockout">
+        <rect x="4.6" y="12.1" width="14.8" height="7.1" rx="1.2" fill="#fff"/>
+        <text x="12" y="17.6" font-family="system-ui, -apple-system, sans-serif"
+              font-size="5.4" font-weight="700" letter-spacing="-.2"
+              text-anchor="middle" fill="#000">MIDI</text>
+      </mask>
+    </defs>
+
+    <symbol id="i-midi" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <rect x="4.6" y="12.1" width="14.8" height="7.1" rx="1.2"
+            fill="currentColor" stroke="none" mask="url(#ok-midi-knockout)"/>
+    </symbol>
+
+    <!-- Transport glyphs are solid by convention; they stay legible at 14px where
+         a 1.5 stroke outline would break up. -->
+    <symbol id="i-play" viewBox="0 0 24 24">
+      <path d="M8.8 5.9 18 12l-9.2 6.1z" fill="currentColor" stroke="currentColor"
+            stroke-width="1.8" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24">
+      <rect x="7.5" y="6" width="3.4" height="12" rx="1.3" fill="currentColor"/>
+      <rect x="13.1" y="6" width="3.4" height="12" rx="1.3" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24">
+      <rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/>
+    </symbol>
+    <symbol id="i-record" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="5.2" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.5v10.5"/>
+      <path d="M8 10.5 12 14.5 16 10.5"/>
+      <path d="M4.5 17v2a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-2"/>
+    </symbol>
+    <symbol id="i-cycle" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 12a8 8 0 1 1-2.6-5.9"/>
+      <path d="M20.2 3.4v4.2H16"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.6 6.6 17.4 17.4M17.4 6.6 6.6 17.4"/>
+    </symbol>
+
+    <!-- Key-change marker: it drops a keyframe, so it is drawn as one. -->
+    <symbol id="i-keyframe" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12h4.2M16.8 12H21"/>
+      <path d="M12 6.9 17.1 12 12 17.1 6.9 12z" fill="currentColor" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- Harmonic-table keyboard. Drawn as a honeycomb rather than one hexagon
+         with radiating spokes: at 15px the spokes read as a sparkle and the
+         hexagon disappears. Three cells read unambiguously as a hex grid. -->
+    <symbol id="i-hex" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 1.9l4.1 2.4v4.7L12 11.4 7.9 9V4.3z"/>
+      <path d="M6.9 10.7l4.1 2.4v4.7L6.9 20.2 2.8 17.8v-4.7z"/>
+      <path d="M17.1 10.7l4.1 2.4v4.7l-4.1 2.4-4.1-2.4v-4.7z"/>
+    </symbol>
+
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      <circle cx="12" cy="12" r="5"/>
+      <path d="M12 7v10a5 5 0 0 0 0-10z" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20.5 14.3A8.5 8.5 0 1 1 9.7 3.5a6.8 6.8 0 0 0 10.8 10.8z"/>
+    </symbol>
+
+    <symbol id="i-fretboard" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2.5" y="6" width="19" height="12" rx="1.5"/>
+      <path d="M8.2 6v12M13.4 6v12M18 6v12" opacity=".75"/>
+      <circle cx="10.8" cy="12" r="1.15" fill="currentColor" stroke="none"/>
+    </symbol>
+  </svg>
+
+  <!-- TOP TRANSPORT BAR -->
+  <div class="toolbar top-bar">
+    <div class="tb-main">
+      <div class="tb-group tb-group-playback">
+        <span class="tb-label">Playback</span>
+        <div class="tb-controls">
+          <label class="btn file-btn">
+            <svg class="ico" aria-hidden="true"><use href="#i-midi"></use></svg>
+            <span class="btn-label">Load MIDI</span>
+            <input type="file" id="file-input" accept=".mid,.midi,audio/midi" hidden>
+          </label>
+
+          <button class="btn" id="btn-play" disabled>
+            <svg class="ico" aria-hidden="true"><use href="#i-play"></use></svg>
+            <span class="btn-label">Play</span>
+          </button>
+
+          <button class="btn" id="btn-stop" disabled>
+            <svg class="ico" aria-hidden="true"><use href="#i-stop"></use></svg>
+            <span class="btn-label">Stop</span>
+          </button>
+
+          <input type="range" id="seek" min="0" max="1" step="0.01" value="0" disabled>
+
+          <select class="btn" id="rate" title="Playback speed">
+            <option value="0.5">0.5×</option>
+            <option value="0.75">0.75×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.25">1.25×</option>
+            <option value="1.5">1.5×</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-view">
+        <span class="tb-label">View</span>
+        <div class="tb-controls">
+          <button class="btn" id="btn-fretboard" title="Toggle guitar fretboard view">
+            <svg class="ico" aria-hidden="true"><use href="#i-fretboard"></use></svg>
+            <span class="btn-label">Fretboard</span>
+          </button>
+
+          <button class="btn" id="btn-fretmode" title="Fretboard display: all positions / exact played pitch / optimal voicing">
+            Frets: All
+          </button>
+
+          <select class="btn" id="fret-tuning" title="Guitar string tuning, or the pitch system everything sounds in">
+            <optgroup label="Guitar strings">
+              <option value="standard" selected>Tuning: Standard</option>
+              <option value="dropd">Tuning: Drop D</option>
+              <option value="dadgad">Tuning: DADGAD</option>
+              <option value="openg">Tuning: Open G</option>
+              <option value="opend">Tuning: Open D</option>
+              <option value="fourths">Tuning: All Fourths</option>
+              <option value="halfstep">Tuning: ½-Step Down</option>
+              <option value="custom">Tuning: Custom…</option>
+            </optgroup>
+            <optgroup label="Pitch system (microtonal)">
+              <option value="pitch:12">Pitch: 12-TET (normal)</option>
+              <option value="pitch:19">Pitch: 19-EDO</option>
+              <option value="pitch:31">Pitch: 31-EDO</option>
+              <option value="pitch:scl">Pitch: Load .scl…</option>
+            </optgroup>
+            <!-- 53-EDO lives here only. Its 12-note subset is Pythagorean by
+                 construction — pure fifths but thirds 21¢ sharp, worse than
+                 12-TET's 14¢ — and no key anchoring fixes that, because in
+                 53-EDO the good third simply isn't four fifths away. It needs
+                 one key per step to be worth playing. -->
+            <optgroup label="…with 1 key per scale step">
+              <option value="pitch:19:linear">19-EDO · 1 key/step</option>
+              <option value="pitch:31:linear">31-EDO · 1 key/step</option>
+              <option value="pitch:41:linear">41-EDO · 1 key/step</option>
+              <option value="pitch:53:linear">53-EDO · 1 key/step</option>
+              <option value="pitch:scl:linear">Load .scl · 1 key/step…</option>
+            </optgroup>
+          </select>
+          <input type="file" id="scl-input" accept=".scl,text/plain" hidden>
+
+          <button class="btn" id="btn-voicing" title="Cycle to the next playable voicing (voicing mode)">
+            <svg class="ico" aria-hidden="true"><use href="#i-cycle"></use></svg>
+            <span class="btn-label">Voicing</span>
+          </button>
+
+          <button class="btn" id="btn-iso" title="Isomorphic harmonic-table keyboard (hex grid) instead of the piano">
+            <svg class="ico" aria-hidden="true"><use href="#i-hex"></use></svg>
+            <span class="btn-label">Iso</span>
+          </button>
+
+          <button class="btn" id="btn-theme" title="Toggle light / dark theme">
+            <svg class="ico" aria-hidden="true"><use href="#i-sun"></use></svg>
+            <span class="btn-label">Light</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-key">
+        <span class="tb-label">Key</span>
+        <div class="tb-controls">
+          <select class="btn" id="key-select" title="Key signature — controls enharmonic spelling in notation">
+            <option value="C" selected>C major / A minor</option>
+            <option value="G">G major / E minor</option>
+            <option value="D">D major / B minor</option>
+            <option value="A">A major / F♯ minor</option>
+            <option value="E">E major / C♯ minor</option>
+            <option value="B">B major / G♯ minor</option>
+            <option value="F#">F♯ major / D♯ minor</option>
+            <option value="C#">C♯ major / A♯ minor</option>
+            <option value="F">F major / D minor</option>
+            <option value="Bb">B♭ major / G minor</option>
+            <option value="Eb">E♭ major / C minor</option>
+            <option value="Ab">A♭ major / F minor</option>
+            <option value="Db">D♭ major / B♭ minor</option>
+            <option value="Gb">G♭ major / E♭ minor</option>
+            <option value="Cb">C♭ major / A♭ minor</option>
+          </select>
+
+          <button class="btn" id="btn-add-key" title="Drop a key-change keyframe at the playhead (MIDI file mode)">
+            <svg class="ico" aria-hidden="true"><use href="#i-keyframe"></use></svg>
+            <span class="btn-label">Key change</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-bass">
+        <span class="tb-label">Bass Split</span>
+        <div class="tb-controls">
+          <select class="btn" id="split-mode" title="Key split for chord display">
+            <option value="off" selected>Split: Off</option>
+            <option value="slash">Split: Slash (C/E)</option>
+            <option value="separate">Split: Bass apart</option>
+          </select>
+
+          <select class="btn" id="split-point" title="Split point">
+            <option value="36">Split ≤ C2</option>
+            <option value="40">Split ≤ E2</option>
+            <option value="43">Split ≤ G2</option>
+            <option value="48" selected>Split ≤ C3</option>
+            <option value="52">Split ≤ E3</option>
+            <option value="55">Split ≤ G3</option>
+            <option value="60">Split ≤ C4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-sound">
+        <span class="tb-label">Sound</span>
+        <div class="tb-controls">
+          <select class="btn" id="sound-select" title="Sound source: SoundFont sounds load on first use">
+            <option value="synth" selected>Sound: Synth</option>
+            <option value="rhodes">Sound: Rhodes</option>
+            <option value="petrof">Sound: Grand Piano</option>
+            <option value="airbrass">Sound: Air Brass (Blow Into Phone)</option>
+          </select>
+
+          <span id="breath-pill" class="breath-pill" hidden title="Air Brass breath level — click for the pairing QR">
+            <span id="breath-pill-dot" class="breath-pill-dot"></span>
+            <span class="breath-pill-meter"><span id="breath-pill-fill"></span></span>
+          </span>
+
+          <span class="vol-wrap" title="Master volume">
+            <span class="vol-icon">vol</span>
+            <input type="range" id="master-volume" min="0" max="150" step="1" value="90" title="Master volume">
+          </span>
+
+          <span class="vol-wrap" title="Reverb amount">
+            <span class="vol-icon">verb</span>
+            <input type="range" id="reverb-amount" min="0" max="1" step="0.01" value="0.2" title="Reverb amount">
+          </span>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-input">
+        <span class="tb-label">Input</span>
+        <div class="tb-controls">
+          <button class="btn" id="btn-live" title="Switch back to live keyboard input">Live</button>
+        </div>
+      </div>
+
+      <div class="tb-group tb-group-video">
+        <span class="tb-label">Video</span>
+        <div class="tb-controls">
+          <button class="btn" id="btn-record">
+            <svg class="ico" aria-hidden="true"><use href="#i-record"></use></svg>
+            <span class="btn-label">Capture</span>
+          </button>
+
+          <button class="btn accent" id="btn-export" disabled>
+            <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span class="btn-label">Export</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tb-group tb-account">
+      <span class="tb-label">Account</span>
+      <div class="tb-controls">
+        <span id="auth-box"></span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- MIDDLE WORKSPACE (Sidebar + Canvas) -->
+  <div class="workspace">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="mode-toggle" title="Free Play = improvise, chords follow, record the take. Sequencer = record a melody and auto-generate a looping progression.">
+        <button class="btn" id="btn-mode-free">Free Play</button>
+        <button class="btn" id="btn-mode-seq">Sequencer</button>
+      </div>
+
+      <div class="side-card" data-harm-group="free">
+        <span class="section-title">Free Harmonise</span>
+        <button class="btn accent block" id="btn-harmonize" title="Harmonise what you play">
+          <span class="led" aria-hidden="true"></span>
+          <span class="btn-label">Harmonise</span>
+        </button>
+        <div class="field">
+          <span class="field-label">Key</span>
+          <div class="flex-row">
+            <select class="btn half" id="harm-key">
+              <option value="0">C</option><option value="1">D♭</option><option value="2">D</option>
+              <option value="3">E♭</option><option value="4">E</option><option value="5">F</option>
+              <option value="6">G♭</option><option value="7">G</option><option value="8">A♭</option>
+              <option value="9">A</option><option value="10">B♭</option><option value="11">B</option>
+            </select>
+            <select class="btn half" id="harm-mode">
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field-label">Harmony style</span>
+          <select class="btn block" id="harm-approach">
+            <option value="functional">Functional (in key)</option>
+            <option value="nonfunctional">Non-functional (contextual)</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">Chord vocabulary</span>
+          <select class="btn block" id="harm-chordset" title="Chord vocabulary for free harmonising — from the free-midi-chords pack, or our own jazz rules">
+            <option value="pack" selected>All</option>
+            <option value="triads">Less notes</option>
+            <option value="sevenths">More notes</option>
+            <option value="classic">OrbKords</option>
+          </select>
+        </div>
+        <label class="check-row" title="Hitting the same note again cycles through alternative harmonies instead of repeating the same chord">
+          <input type="checkbox" id="harm-variety" checked> Vary repeated notes
+        </label>
+      </div><!-- /free settings -->
+
+      <div class="side-card" data-harm-group="sequencer">
+        <span class="section-title">Step Sequencer</span>
+        <div class="field">
+          <span class="field-label">Chord source</span>
+          <select class="btn block" id="harm-source" title="Where sequence chords come from: our rule engine, or real progressions from the MIDI pack">
+            <option value="rules">Rule engine</option>
+            <option value="pack" selected>Progression pack</option>
+            <option value="packmodal">Modal pack</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">Mood</span>
+          <select class="btn block" id="harm-mood" title="Filter pack progressions by mood">
+            <option value="" selected>Any mood</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">Comping style</span>
+          <select class="btn block" id="harm-style" title="Comping rhythm, extracted from the style packs">
+            <option value="block" selected>Block chords</option>
+            <option value="pop">Pop</option>
+            <option value="pop2">Pop 2</option>
+            <option value="soul">Soul</option>
+            <option value="hiphop2">Hip hop</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">Chord rate</span>
+          <select class="btn block" id="harm-grid">
+            <option value="bar">Chord / bar</option>
+            <option value="half" selected>Chord / ½ bar</option>
+          </select>
+        </div>
+        <div class="field">
+          <span class="field-label">Length · Tempo</span>
+          <div class="flex-row">
+            <select class="btn half" id="harm-bars"><option value="4" selected>4 bars</option><option value="8">8 bars</option></select>
+            <select class="btn half" id="harm-bpm"><option value="100" selected>100 BPM</option><option value="120">120 BPM</option></select>
+          </div>
+        </div>
+        <button class="btn accent block" id="btn-harm-rec" title="Count in one bar, then record a melody to auto-harmonise into a looping progression">
+          <svg class="ico" aria-hidden="true"><use href="#i-record"/></svg>
+          <span class="btn-label">Record melody</span>
+        </button>
+        <button class="btn block" id="btn-harm-reroll" title="Re-harmonise the same melody with the next-best progression (applies any settings you changed)">
+          <svg class="ico" aria-hidden="true"><use href="#i-cycle"/></svg>
+          <span class="btn-label">Next progression</span>
+        </button>
+      </div><!-- /sequencer -->
+
+      <div class="side-card">
+        <span class="section-title">Voicing</span>
+        <label class="slider-row" title="Voicing clustering: tight close-position ↔ open spread (drop voicings)">
+          <span>Tight</span>
+          <input type="range" id="harm-spread" min="0" max="1" step="0.05" value="0.2">
+          <span>Open</span>
+        </label>
+        <label class="slider-row" title="Lowest allowed generated harmony note">
+          <span>Low</span>
+          <input type="range" id="harm-lowest-midi" min="36" max="72" step="1" value="48">
+          <span id="harm-lowest-label">C3</span>
+        </label>
+
+      </div>
+
+      <div class="side-card">
+        <span class="section-title">Dynamics</span>
+        <div class="field">
+          <span class="field-label">Played notes</span>
+          <label class="slider-row" title="Velocity for notes played on the computer keyboard. A connected MIDI keyboard uses its own real velocity instead.">
+            <span>Soft</span>
+            <input type="range" id="kb-velocity" min="1" max="127" step="1" value="78">
+            <span>Hard</span>
+          </label>
+          <label class="check-row" title="Randomise computer-keyboard velocity slightly so repeated notes aren't identical">
+            <input type="checkbox" id="kb-humanize"> Humanise keys
+          </label>
+        </div>
+        <div class="field">
+          <span class="field-label">Generated chords</span>
+          <label class="slider-row" title="Velocity for generated / harmonised chords (real soundfonts sound harsh at full velocity)">
+            <span>Soft</span>
+            <input type="range" id="chord-velocity" min="1" max="127" step="1" value="68">
+            <span>Hard</span>
+          </label>
+          <label class="check-row" title="Randomise generated-chord velocity slightly for a more human, less machine-gun feel">
+            <input type="checkbox" id="chord-humanize" checked> Humanise chords
+          </label>
+        </div>
+      </div>
+
+      <div class="side-card" data-harm-group="free">
+        <span class="section-title">Record Take</span>
+        <div class="field">
+          <span class="field-label">Tempo</span>
+          <select class="btn block" id="take-bpm" title="Tempo for the count-in and metronome click">
+            <option value="80">80 BPM</option>
+            <option value="90">90 BPM</option>
+            <option value="100" selected>100 BPM</option>
+            <option value="110">110 BPM</option>
+            <option value="120">120 BPM</option>
+          </select>
+        </div>
+        <label class="check-row" title="Play a metronome click while recording. It is a monitor guide only — it is NOT written into the exported MIDI.">
+          <input type="checkbox" id="take-metro" checked> Metronome
+        </label>
+        <button class="btn accent block" id="btn-take" title="Count in one bar, then record your free-harmonise performance (melody + chords) as an editable MIDI loop">
+          <svg class="ico" aria-hidden="true"><use href="#i-record"/></svg>
+          <span class="btn-label">Record take</span>
+        </button>
+      </div><!-- /free record -->
+
+      <div class="side-card">
+        <span class="section-title">Export</span>
+        <button class="btn block" id="btn-export-midi" title="Download the loaded / harmonised / recorded sequence as a .mid file">
+          <svg class="ico" aria-hidden="true"><use href="#i-download"/></svg>
+          <span class="btn-label">Export MIDI</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT CANVAS AREA -->
+    <div class="stage-wrap">
+      <canvas id="stage" width="1920" height="1080"></canvas>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM STATUS BAR -->
+  <div class="statusbar">
+    <span id="midi-status">MIDI: initialising…</span>
+    <span class="hint">Live mode: play your MIDI keyboard, or computer keys A-; (Z/X shift octave). Space = play/pause.</span>
+  </div>
+
+  <!-- Air Brass pairing modal (QR) — app.js populates and drives it -->
+  <div id="breath-modal" class="breath-modal" hidden>
+    <div class="gate-card">
+      <div class="gate-logo">AIR BRASS</div>
+      <div class="gate-title">Blow into your phone</div>
+      <div class="gate-sub">Scan this</div>
+      <div id="breath-qr" class="breath-qr"></div>
+      <div id="breath-modal-status" class="breath-status">Starting session…</div>
+      <div id="breath-countdown" class="gate-note"></div>
+
+      <div class="breath-settings">
+        <label class="breath-row" title="How long every note takes to swell in. Notes always start from silence, however hard you blow — this is what stops chord changes punching.">
+          <span>Attack</span>
+          <input type="range" id="breath-attack" min="0" max="200" step="5" value="70">
+          <b id="breath-attack-val">70 ms</b>
+        </label>
+        <label class="breath-row" title="Portamento: new notes slide in from the nearest note of the previous chord.">
+          <span>Glide</span>
+          <input type="range" id="breath-glide" min="0" max="200" step="5" value="50">
+          <b id="breath-glide-val">50 ms</b>
+        </label>
+      </div>
+
+      <div class="breath-actions">
+        <button class="btn" id="breath-regen">New code</button>
+        <button class="btn" id="breath-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/chord-engine.js"></script>
+  <script src="js/midi-file5e1f.js?v=2"></script>
+  <script src="js/midi-writer5e1f.js?v=2"></script>
+  <script src="js/sampler1bce.js?v=6"></script>
+  <script src="js/synthae52.js?v=5"></script>
+  <script src="js/vendor/qrcode3860.js?v=1"></script>
+  <script src="js/expression5e1f.js?v=2"></script>
+  <script src="js/breathlink3860.js?v=1"></script>
+  <script src="js/enharmonic3860.js?v=1"></script>
+  <script src="js/chordpack3860.js?v=1"></script>
+  <script src="js/tuning30f4.js?v=3"></script>
+  <script src="js/isokeyboardae52.js?v=5"></script>
+  <script src="js/rendererce31.js?v=19"></script>
+  <script src="js/voicing3860.js?v=1"></script>
+  <script src="js/pianovoicing3860.js?v=1"></script>
+  <script src="js/harmonizerae52.js?v=5"></script>
+  <script src="js/fretboard1bce.js?v=6"></script>
+  <script src="js/app0e34.js?v=33"></script>
+  <!-- Auth (Supabase): env shim first (generated by tools/gen-env.js), then the module -->
+  <script src="js/env3860.js?v=1"></script>
+  <script type="module" src="js/authbea6.js?v=7"></script>
+</body>
+
+<!-- Mirrored from orbkord.net/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 10 Aug 2026 18:44:52 GMT -->
+</html>
